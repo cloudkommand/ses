@@ -35,8 +35,8 @@ def lambda_handler(event, context):
         )
 
         redirect_domain = cdef.get("redirect_domain")
-        tls_policy = cdef.get("tls_policy")
-        sending_pool_name = cdef.get("sending_pool_name")
+        tls_policy = cdef.get("tls_policy") or "OPTIONAL"
+        sending_pool_name = cdef.get("sending_pool_name") or "default"
 
         reputation_metrics_enabled = cdef.get("reputation_metrics_enabled", False)
         
@@ -62,9 +62,9 @@ def lambda_handler(event, context):
 
         configuration = {
             "ConfigurationSetName": name,
-            "TrackingOptions": remove_none_attributes({
+            "TrackingOptions": {
                 "CustomRedirectDomain": redirect_domain
-            }) or None,
+            },
             "DeliveryOptions": remove_none_attributes({
                 "TlsPolicy": tls_policy,
                 "SendingPoolName": sending_pool_name
@@ -196,6 +196,9 @@ def create_configuration_set(name, desired_config, region):
                 "TooManyTagsException"
             ]
         )
+    except Exception as e:
+        print(type(e))
+        print(str(e))
 
 
 @ext(handler=eh, op="put_configuration_set_tracking_options")

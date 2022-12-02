@@ -36,7 +36,7 @@ def lambda_handler(event, context):
 
         redirect_domain = cdef.get("redirect_domain")
         tls_policy = cdef.get("tls_policy") or "OPTIONAL"
-        sending_pool_name = cdef.get("sending_pool_name") or "default"
+        sending_pool_name = cdef.get("sending_pool_name")
 
         reputation_metrics_enabled = cdef.get("reputation_metrics_enabled", False)
         

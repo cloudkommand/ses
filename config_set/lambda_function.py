@@ -60,11 +60,11 @@ def lambda_handler(event, context):
             
         compare_defs(event)
 
-        configuration = {
+        configuration = remove_none_attributes({
             "ConfigurationSetName": name,
-            "TrackingOptions": {
+            "TrackingOptions": remove_none_attributes({
                 "CustomRedirectDomain": redirect_domain
-            },
+            }) or None,
             "DeliveryOptions": remove_none_attributes({
                 "TlsPolicy": tls_policy,
                 "SendingPoolName": sending_pool_name
@@ -84,7 +84,9 @@ def lambda_handler(event, context):
             #         "OptimizedSharedDelivery": vdm_optimized_shared_delivery
             #     }
             # }
-        }
+        })
+
+        print(f"configuration = {configuration}")
 
         get_configuration_set(prev_state, name, configuration, region, tags)
         create_configuration_set(name, configuration, region)
@@ -150,11 +152,11 @@ def get_configuration_set(prev_state, name, configuration, region, tags):
         eh.add_links({"Configuration Set": gen_configuration_set_link(name, region)})
 
         if response.get("TrackingOptions") != configuration.get("TrackingOptions"):
-            eh.add_op("put_configuration_set_tracking_options")
+            eh.add_op("put_configuration_set_tracking_options", {"redirect_domain", configuration.get("TrackingOptions", {}).get("CustomRedirectDomain")})
         if response.get("DeliveryOptions") != configuration.get("DeliveryOptions"):
-            eh.add_op("put_configuration_set_delivery_options")
+            eh.add_op("put_configuration_set_delivery_options", {"tls_policy": configuration.get("DeliveryOptions", {}).get("TlsPolicy"), "sending_pool_name": configuration.get("DeliveryOptions", {}).get("SendingPoolName")})
         if response.get("ReputationOptions", {}).get("ReputationMetricsEnabled") != configuration.get("ReputationOptions", {}).get("ReputationMetricsEnabled"):
-            eh.add_op("put_configuration_set_reputation_options")
+            eh.add_op("put_configuration_set_reputation_options", {"reputation_enabled": configuration.get("ReputationOptions", {}).get("ReputationMetricsEnabled")})
         if response.get("SendingOptions") != configuration.get("SendingOptions"):
             eh.add_op("put_configuration_set_sending_options")
 

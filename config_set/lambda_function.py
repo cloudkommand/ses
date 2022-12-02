@@ -15,7 +15,7 @@ from extutil import remove_none_attributes, account_context, ExtensionHandler, e
 
 eh = ExtensionHandler()
 
-ses = boto3.client('ses')
+ses = boto3.client('sesv2')
 
 def lambda_handler(event, context):
     try:
@@ -104,7 +104,7 @@ def lambda_handler(event, context):
         eh.add_log("Unexpected Error", {"error": msg}, is_error=True)
         eh.declare_return(200, 0, error_code=str(e))
         return eh.finish()
-        
+
 
 @ext(handler=eh, op="compare_defs")
 def compare_defs(event):

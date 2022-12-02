@@ -5,7 +5,7 @@
             "displayname": "CK SES Configuration Set",
             "description": "Deploys an AWS SES Configuration Set. A configuration set is necessary in order to send emails using SES.",
             "cloud": "AWS",
-            "resources": ["AWS::ses::configurationset"],
+            "resources": ["AWS::ses::configuration-set"],
             "policy": {
                 "Version": "2012-10-17",
                 "Statement": [{
@@ -21,6 +21,7 @@
                         "ses:PutConfigurationSetReputationOptions",
                         "ses:PutConfigurationSetSendingOptions",
                         "ses:PutConfigurationSetTrackingOptions",
+                        "PutConfigurationSetVdmOptions",
                         "ses:UpdateConfigurationSetEventDestination",
                         "ses:UpdateConfigurationSetReputationMetricsEnabled",
                         "ses:UpdateConfigurationSetSendingEnabled",

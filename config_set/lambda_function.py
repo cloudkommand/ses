@@ -39,10 +39,10 @@ def lambda_handler(event, context):
         sending_pool_name = cdef.get("sending_pool_name")
 
         reputation_metrics_enabled = cdef.get("reputation_metrics_enabled", False)
+        
         #Not doing suppression list for now
-
-        vdm_engagement_metrics = cdef.get("vdm_engagement_metrics", False)
-        vdm_optimized_shared_delivery = cdef.get("vdm_optimized_shared_delivery", False)
+        # vdm_engagement_metrics = cdef.get("vdm_engagement_metrics", False)
+        # vdm_optimized_shared_delivery = cdef.get("vdm_optimized_shared_delivery", False)
 
         tags = cdef.get("tags") or {}
         trust_level = cdef.get("trust_level")
@@ -76,14 +76,14 @@ def lambda_handler(event, context):
                 "SendingEnabled": True
             },
             "Tags": format_tags(tags),
-            "VdmOptions": {
-                "DashboardOptions": {
-                    "EngagementMetrics": vdm_engagement_metrics,
-                },
-                "GuardianOptions": {
-                    "OptimizedSharedDelivery": vdm_optimized_shared_delivery
-                }
-            }
+            # "VdmOptions": {
+            #     "DashboardOptions": {
+            #         "EngagementMetrics": vdm_engagement_metrics,
+            #     },
+            #     "GuardianOptions": {
+            #         "OptimizedSharedDelivery": vdm_optimized_shared_delivery
+            #     }
+            # }
         }
 
         get_configuration_set(prev_state, name, configuration, region, tags)
@@ -278,6 +278,35 @@ def put_configuration_set_delivery_options():
                 "BadRequestException"
             ]
         )
+
+# @ext(handler=eh, op="put_configuration_set_vdm_options")
+# def put_configuration_set_vdm_options():
+#     name = eh.props.get("name")
+#     vdm_engagement_metrics = eh.ops['put_configuration_set_vdm_options']['vdm_engagement_metrics']
+#     vdm_optimized_shared_delivery = eh.ops['put_configuration_set_vdm_options']['vdm_optimized_shared_delivery']
+
+#     try:
+#         response = ses.put_configuration_set_vdm_options(
+#             ConfigurationSetName=name,
+#             VdmOptions= {
+#                 "DashboardOptions": {
+#                     "EngagementMetrics": vdm_engagement_metrics,
+#                 },
+#                 "GuardianOptions": {
+#                     "OptimizedSharedDelivery": vdm_optimized_shared_delivery,
+#                 }
+#             }
+#         )
+#         eh.add_log("Updated Configuration Set VDM Options", response)
+        
+#     except ClientError as e:
+#         handle_common_errors(
+#             e, eh, "Update Configuration Set VDM Options Failed", 56,
+#             perm_errors=[
+#                 "NotFoundException",
+#                 "BadRequestException"
+#             ]
+#         )
 
 @ext(handler=eh, op="delete_configuration_set")
 def delete_configuration_set():

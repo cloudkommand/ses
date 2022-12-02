@@ -21,7 +21,7 @@
                         "ses:PutConfigurationSetReputationOptions",
                         "ses:PutConfigurationSetSendingOptions",
                         "ses:PutConfigurationSetTrackingOptions",
-                        "PutConfigurationSetVdmOptions",
+                        "ses:PutConfigurationSetVdmOptions",
                         "ses:UpdateConfigurationSetEventDestination",
                         "ses:UpdateConfigurationSetReputationMetricsEnabled",
                         "ses:UpdateConfigurationSetSendingEnabled",

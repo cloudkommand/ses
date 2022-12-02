@@ -7,7 +7,7 @@ import zipfile
 import os
 import hashlib
 
-from botocore.exceptions import ClientError
+from botocore.exceptions import ClientError, ParamValidationError
 
 from extutil import remove_none_attributes, account_context, ExtensionHandler, ext, \
     current_epoch_time_usec_num, component_safe_name, lambda_env, random_id, \
@@ -180,14 +180,14 @@ def create_configuration_set(name, desired_config, region):
 
     try:
         response = ses.create_configuration_set(**desired_config)
-        eh.add_log("Created ECR Repository", response)
+        eh.add_log("Created Configuration Set", response)
         eh.add_props({
             "name": name
         })
         eh.add_links({"Configuration Set": gen_configuration_set_link(name, region)})
     except ClientError as e:
         handle_common_errors(
-            e, eh, "Create ECR Repository Failed", 20,
+            e, eh, "Create Configuration Set Failed", 20,
             perm_errors=[
                 "LimitExceededException", 
                 "RepositoryAlreadyExistsException",
@@ -196,10 +196,9 @@ def create_configuration_set(name, desired_config, region):
                 "TooManyTagsException"
             ]
         )
-    except Exception as e:
-        print(type(e))
-        print(str(e))
-
+    except ParamValidationError as e:
+        eh.add_log("Invalid Parameters for Configuration Set", {"error": str(e)}, is_error=True)
+        eh.perm_error("Invalid Parameters for Configuration Set", 20)
 
 @ext(handler=eh, op="put_configuration_set_tracking_options")
 def put_configuration_set_tracking_options():

@@ -62,16 +62,16 @@ def lambda_handler(event, context):
 
         configuration = {
             "ConfigurationSetName": name,
-            "TrackingOptions": {
+            "TrackingOptions": remove_none_attributes({
                 "CustomRedirectDomain": redirect_domain
-            },
-            "DeliveryOptions": {
+            }) or None,
+            "DeliveryOptions": remove_none_attributes({
                 "TlsPolicy": tls_policy,
                 "SendingPoolName": sending_pool_name
-            },
-            "ReputationOptions": {
+            }) or None,
+            "ReputationOptions": remove_none_attributes({
                 "ReputationMetricsEnabled": reputation_metrics_enabled
-            },
+            }) or None,
             "SendingOptions": {
                 "SendingEnabled": True
             },

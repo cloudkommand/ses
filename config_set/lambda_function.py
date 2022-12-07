@@ -56,7 +56,7 @@ def lambda_handler(event, context):
                 eh.add_op("get_configuration_set")
 
         elif event.get("op") == "delete":
-            eh.add_op("delete_repository", {"create_and_remove": False, "name": name})
+            eh.add_op("delete_configuration_set", {"create_and_remove": False, "name": name})
             
         compare_defs(event)
 

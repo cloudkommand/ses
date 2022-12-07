@@ -322,7 +322,7 @@ def delete_configuration_set():
             "ConfigurationSetName": config_set_name
         }
 
-        _ = ses.delete_repository(**params)
+        _ = ses.delete_configuration_set(**params)
         eh.add_log("Deleted Configuration Set", {"name": config_set_name})
 
     except botocore.exceptions.ClientError as e:
